@@ -53,13 +53,42 @@ app.delete('/api/persons/:id', (request, response)=>{
     response.status(204).end()
 })
 
+const generateUniqueId = () =>{
+  const maxId = persons.length > 0 
+  ? Math.floor(Math.random() * Math.max(...persons.map(n => Number(n.id))) * 100)
+  : 0
+  return String(maxId + 1)
+}
+
 app.post('/api/persons', (request, response)=>{
-    const maxId = persons.length > 0 
-      ? Math.floor(Math.random() * Math.max(...persons.map(n => Number(n.id))) * 100)
-      : 0
-    const person = request.body
-    person.id = String(maxId + 1)
+
+    const body = request.body
+    const sameName = persons.find(per => per.name === body.name)
+
+    if(!body.name){
+      return response.status(400).json({
+        error: 'name missing'
+      })
+    }
+    if(!body.number){
+      return response.status(400).json({
+        error : "number missing"
+      })
+    }
+    if(sameName){
+      return response.status(400).json({
+        error : "name must be unique"
+      })
+    }
+
+    const person = {
+      id : generateUniqueId(),
+      name : body.name,
+      number : body.number
+    }
+
     persons = persons.concat(person)
+
     response.json(person)
 })
 
