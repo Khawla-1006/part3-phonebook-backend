@@ -54,13 +54,16 @@ app.delete('/api/persons/:id', (request, response)=>{
 })
 
 app.post('/api/persons', (request, response)=>{
+    const maxId = persons.length > 0 
+      ? Math.floor(Math.random() * Math.max(...persons.map(n => Number(n.id))) * 100)
+      : 0
     const person = request.body
-    console.log(person)
+    person.id = String(maxId + 1)
+    persons = persons.concat(person)
     response.json(person)
-//finish the setup for a specific id
-
 })
 
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}...`)
+console.log(Math.floor(Math.random() * 60))
