@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 
 app.use(morgan('dev'))
+app.use(morgan(':POST'))
 app.use(express.json())
 
 let persons = [
@@ -28,11 +29,10 @@ let persons = [
         }
     ]
 
-
-// morgan.token('POST', function (req, res){
-//   return string(res)
-// })
-
+morgan.token('POST', function(req, res){
+  // console.log(req.body)
+  return JSON.stringify(req.body)
+})
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
